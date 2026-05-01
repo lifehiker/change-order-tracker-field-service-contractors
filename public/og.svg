@@ -1,0 +1,26 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F4EEE4"/>
+  <rect x="48" y="48" width="1104" height="534" rx="32" fill="#FFF9F0" stroke="#1F1F1F" stroke-opacity="0.14"/>
+  <rect x="88" y="92" width="420" height="446" rx="28" fill="#18353B"/>
+  <path d="M120 132H478" stroke="#5BB8BD" stroke-opacity="0.24"/>
+  <path d="M120 170H478" stroke="#5BB8BD" stroke-opacity="0.24"/>
+  <path d="M120 208H478" stroke="#5BB8BD" stroke-opacity="0.24"/>
+  <rect x="124" y="126" width="188" height="40" rx="20" fill="#5BB8BD" fill-opacity="0.2"/>
+  <text x="144" y="151" fill="#DDF7F7" font-size="18" font-family="Arial" letter-spacing="3">LIVE WORKFLOW</text>
+  <text x="124" y="258" fill="#F7F0E7" font-size="92" font-family="Arial" font-weight="700">SCOPE</text>
+  <text x="124" y="342" fill="#F7F0E7" font-size="92" font-family="Arial" font-weight="700">CHANGED.</text>
+  <text x="124" y="426" fill="#F7F0E7" font-size="92" font-family="Arial" font-weight="700">BILL IT.</text>
+  <rect x="584" y="120" width="516" height="176" rx="28" fill="#FBF5EC" stroke="#1F1F1F" stroke-opacity="0.12"/>
+  <text x="628" y="176" fill="#B85D2D" font-size="18" font-family="Arial" letter-spacing="3">CHANGE ORDER TRACKER</text>
+  <text x="628" y="238" fill="#1F1F1F" font-size="40" font-family="Arial" font-weight="700">Capture onsite scope changes,</text>
+  <text x="628" y="286" fill="#1F1F1F" font-size="40" font-family="Arial" font-weight="700">send approval, and create</text>
+  <text x="628" y="334" fill="#1F1F1F" font-size="40" font-family="Arial" font-weight="700">invoice-ready documentation.</text>
+  <rect x="584" y="332" width="244" height="176" rx="28" fill="#F6EFE3" stroke="#1F1F1F" stroke-opacity="0.12"/>
+  <text x="624" y="388" fill="#6D6157" font-size="18" font-family="Arial" letter-spacing="3">FIELD CAPTURE</text>
+  <text x="624" y="452" fill="#1F1F1F" font-size="54" font-family="Arial" font-weight="700">3 MIN</text>
+  <text x="624" y="486" fill="#6D6157" font-size="22" font-family="Arial">from surprise to clean record</text>
+  <rect x="856" y="332" width="244" height="176" rx="28" fill="#18353B"/>
+  <text x="896" y="388" fill="#8FD4D7" font-size="18" font-family="Arial" letter-spacing="3">APPROVAL</text>
+  <text x="896" y="452" fill="#F7F0E7" font-size="54" font-family="Arial" font-weight="700">1 LINK</text>
+  <text x="896" y="486" fill="#CDE8E9" font-size="22" font-family="Arial">to get the client decision</text>
+</svg>

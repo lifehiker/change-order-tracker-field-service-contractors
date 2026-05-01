@@ -5,7 +5,7 @@
 - **App Name:** change-order-tracker-field-service-contractors
 - **Repository:** change-order-tracker-field-service-contractors
 - **Tech Stack:** Next.js 15 (App Router) + TypeScript + Tailwind + shadcn/ui
-- **Description:** A lightweight web app for contractors and installers to capture onsite change requests, approvals, labor or material impact, and invoice-ready documentation from the field. Whether used by AV installers or residential plumbers, the shared workflow is logging scope changes and getting them approved before margin leaks away.
+- **Description:** change-order-tracker-field-service-contractors
 
 ---
 

@@ -1,0 +1,178 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  memberships   Membership[]
+  createdJobs   Job[]     @relation("JobCreator")
+  createdOrders ChangeOrder[] @relation("OrderCreator")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+model Workspace {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  logoUrl      String?
+  defaultTerms String?
+  taxRate      Float    @default(0)
+  currency     String   @default("USD")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  memberships  Membership[]
+  jobs         Job[]
+  changeOrders ChangeOrder[]
+  subscription Subscription?
+}
+
+model Membership {
+  id          String   @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        String   @default("MEMBER")
+  createdAt   DateTime @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([workspaceId, userId])
+}
+
+model Job {
+  id             String   @id @default(cuid())
+  workspaceId    String
+  customerName   String
+  customerEmail  String?
+  siteAddress    String
+  originalScope  String?
+  status         String   @default("ACTIVE")
+  createdById    String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy      User      @relation("JobCreator", fields: [createdById], references: [id])
+  changeOrders   ChangeOrder[]
+}
+
+model ChangeOrder {
+  id                  String   @id @default(cuid())
+  jobId               String
+  workspaceId         String
+  title               String
+  description         String?
+  laborImpactCents    Int      @default(0)
+  materialImpactCents Int      @default(0)
+  otherImpactCents    Int      @default(0)
+  totalCents          Int      @default(0)
+  status              String   @default("DRAFT")
+  urgency             String   @default("NORMAL")
+  sentAt              DateTime?
+  approvedAt          DateTime?
+  rejectedAt          DateTime?
+  invoicedAt          DateTime?
+  createdById         String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  job                 Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  workspace           Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy           User      @relation("OrderCreator", fields: [createdById], references: [id])
+  attachments         ChangeOrderAttachment[]
+  approvalRequests    ApprovalRequest[]
+  events              ApprovalEvent[]
+}
+
+model ChangeOrderAttachment {
+  id            String   @id @default(cuid())
+  changeOrderId String
+  fileName      String
+  fileType      String
+  dataUrl       String
+  createdAt     DateTime @default(now())
+  changeOrder   ChangeOrder @relation(fields: [changeOrderId], references: [id], onDelete: Cascade)
+}
+
+model ApprovalRequest {
+  id              String   @id @default(cuid())
+  changeOrderId   String
+  token           String   @unique @default(cuid())
+  recipientName   String?
+  recipientEmail  String?
+  message         String?
+  expiresAt       DateTime?
+  viewedAt        DateTime?
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  signerName      String?
+  signerIp        String?
+  createdAt       DateTime @default(now())
+  changeOrder     ChangeOrder @relation(fields: [changeOrderId], references: [id], onDelete: Cascade)
+}
+
+model ApprovalEvent {
+  id            String   @id @default(cuid())
+  changeOrderId String
+  type          String
+  actorType     String   @default("SYSTEM")
+  actorUserId   String?
+  metadataJson  String?
+  createdAt     DateTime @default(now())
+  changeOrder   ChangeOrder @relation(fields: [changeOrderId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id                String   @id @default(cuid())
+  workspaceId       String   @unique
+  stripeCustomerId  String?
+  stripeSubId       String?
+  plan              String   @default("TRIAL")
+  status            String   @default("TRIALING")
+  trialEndsAt       DateTime?
+  currentPeriodEnd  DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  workspace         Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
