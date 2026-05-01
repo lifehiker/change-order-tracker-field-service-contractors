@@ -1,6 +1,4 @@
-FROM node:20-slim AS base
-
-FROM base AS deps
+FROM node:20-slim AS deps
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
@@ -8,32 +6,45 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 
-FROM base AS builder
+FROM node:20-slim AS builder
+RUN apt-get update -y && apt-get install -y openssl python3 make g++ && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npx prisma generate
+ENV DATABASE_URL="file:/tmp/build.db"
+ENV AUTH_SECRET="build-time-placeholder-secret"
+ENV NEXT_PUBLIC_APP_URL="https://localhost:3000"
 ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm rebuild better-sqlite3
+RUN npx prisma generate
 RUN npm run build
 
-FROM base AS runner
+FROM node:20-slim AS runner
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV DATABASE_URL="file:/data/app.db"
+ENV AUTH_SECRET="forge-app-default-secret-override-in-production"
+ENV NEXT_PUBLIC_APP_URL=""
 
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs nextjs
+RUN mkdir -p /data && chown nextjs:nodejs /data
 
 COPY --from=builder /app/public ./public
 RUN mkdir .next && chown nextjs:nodejs .next
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js db push --skip-generate && echo 'DB schema initialized' && node server.js"]

@@ -6,7 +6,7 @@ The app runs fully in development without these keys. Provide them when deployin
 
 ## Required for Production
 
-### `NEXT_PUBLIC_APP_URL` / `NEXT_PUBLIC_SITE_URL`
+### `NEXT_PUBLIC_APP_URL`
 - **Purpose**: Base URL used when generating approval links sent to clients.
 - **Value**: Your production domain, e.g. `https://yourapp.com`
 - **Where to add**: `.env.local` (dev) or your hosting provider's environment variables (prod)
