@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
@@ -15,6 +15,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [callbackUrl, setCallbackUrl] = useState("");
+
+  useEffect(() => {
+    const nextCallbackUrl = new URLSearchParams(window.location.search).get("callbackUrl");
+    setCallbackUrl(nextCallbackUrl || "");
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,7 +34,7 @@ export default function LoginPage() {
       if (result?.error) {
         toast.error("Invalid email or password.");
       } else {
-        router.push("/dashboard");
+        router.push(callbackUrl || "/dashboard");
         router.refresh();
       }
     } catch {

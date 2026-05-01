@@ -78,7 +78,7 @@ export function AppNav() {
       </aside>
 
       {/* Mobile header */}
-      <div className="flex items-center justify-between lg:hidden">
+      <div className="flex w-full items-center justify-between lg:hidden">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl blueprint-panel">
             <ClipboardPlus className="h-4 w-4 text-[#88c8ca]" />

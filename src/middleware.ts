@@ -4,7 +4,15 @@ import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
-const publicPaths = ["/", "/login", "/register", "/pricing", "/studio", "/approve", "/docs"];
+const publicExactPaths = [
+  "/",
+  "/login",
+  "/register",
+  "/pricing",
+  "/studio",
+  "/change-orders",
+];
+const publicNestedPaths = ["/approve", "/docs"];
 const publicPrefixes = [
   "/plumbers",
   "/av-installers",
@@ -25,7 +33,8 @@ const publicPrefixes = [
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isPublic =
-    publicPaths.some((p) => pathname === p || pathname.startsWith(p + "/")) ||
+    publicExactPaths.includes(pathname) ||
+    publicNestedPaths.some((p) => pathname === p || pathname.startsWith(p + "/")) ||
     publicPrefixes.some((p) => pathname.startsWith(p));
 
   if (!isPublic && !req.auth) {
