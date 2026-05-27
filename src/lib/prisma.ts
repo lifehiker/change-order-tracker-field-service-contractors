@@ -8,6 +8,7 @@ function createClient() {
     url: process.env.DATABASE_URL ?? "file:./dev.db",
   });
   return new PrismaClient({
+    adapter: new PrismaBetterSqlite3({ url: process.env.DATABASE_URL ?? "file:./dev.db" }),
     adapter,
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
